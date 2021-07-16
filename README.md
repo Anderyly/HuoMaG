@@ -48,11 +48,11 @@
 
 ## 截图
 
-![截图1](https://gitee.com/anderyly/HuoMaGe/raw/master/image/1.png)
+![截图1](https://raw.githubusercontent.com/Anderyly/HuoMaG/master/image/1.png)
 
-![截图2](https://gitee.com/anderyly/HuoMaGe/raw/master/image/2.png)
+![截图2](https://raw.githubusercontent.com/Anderyly/HuoMaG/master/image/2.png)
 
-![截图3](https://gitee.com/anderyly/HuoMaGe/raw/master/image/3.png)
+![截图3](https://raw.githubusercontent.com/Anderyly/HuoMaG/master/image/3.png)
 
 
 
