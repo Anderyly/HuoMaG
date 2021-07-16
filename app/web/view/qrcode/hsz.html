@@ -1,0 +1,199 @@
+{{@need/header}}
+
+<style>
+    body {
+        background: #f2f3f7;
+    }
+
+    .huoma-dl {
+        width: 94%;
+        margin: 10px 3%;
+        background: #fff;
+        overflow: hidden;
+        border-radius: 3px;
+    }
+
+    .huoma-dl dt {
+        height: 45px;
+        line-height: 45px;
+        border-bottom: 1px solid #eee;
+        margin: 0px 3%;
+    }
+
+    .huoma-dl dt span {
+        float: right;
+        width: 100px;
+        border: 1px solid #1e9fff;
+        color: #1e9fff;
+        margin-top: 6px;
+        text-align: center;
+        border-radius: 3px;
+        line-height: 30px;
+    }
+
+    .huoma-dl div {
+        margin: 10px 3%;
+    }
+
+    .huoma-dl div p {
+        line-height: 25px;
+        color: #999;
+    }
+
+    .huoma-dl div p:nth-child(1) {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 260px;
+        overflow: hidden;
+    }
+
+    .huoma-dl div p span {
+        color: #000;
+        width: 70px;
+        display: inline-block;
+        text-align: right;
+    }
+
+    .huoma-dl dd {
+        margin: 0px 3% 10px 3%;
+    }
+
+    .huoma-dl dd a {
+        width: 30%;
+        display: inline-block;
+        line-height: 35px;
+        background: #ff736f;
+        text-align: center;
+        color: #fff;
+        border-radius: 3px;
+    }
+
+    .huoma-dl dd a:nth-child(1) {
+        background: #28c091;
+    }
+
+    .huoma-dl dd a:nth-child(2) {
+        margin: 0px 3.5%;
+        background: #1e9fff;
+    }
+</style>
+<div class="head-title"><a class="fa fa-angle-left" href="javascript:history.go(-1)"></a> 活码列表</div>
+<div class="h-45"></div>
+<div class="c"></div>
+<div class="huoma-a">
+    <a href="{{:url('index')}}"><i class="fa fa-bars"></i> 活码列表</a>
+    <a href="{{:url('hsz')}}" class="huoma-on"><i class="fa fa-trash-o"></i> 活码回收站</a>
+</div>
+<div class="c"></div>
+<div class="search-user">
+    <dt><input name="key" placeholder="请输入活码编号/活码名称" value="{{$key}}"/></dt>
+    <dd onClick="search()"><i class="fa fa-search"></i> 搜 索</dd>
+</div>
+
+<div class="layui-form">
+    {{ foreach ($res as $v) :}}
+    <div class="huoma-dl">
+        <dt style="text-align:center;">员工：{{$v['account']}}</dt>
+        <div>
+            <p><span>活码编号：</span>{{$v['code']}}</p>
+            <p><span>活码名称：</span>{{$v['name']}}</p>
+            <p><span>页面标题：</span>{{$v['title']}}</p>
+            <p><span>切换次数：</span>{{$v['switch']}}</p>
+            <p><span>扫码量：</span>{{$v['scan']}}</p>
+
+            <p><span>加好友量：</span>{{$v['plus']}}</p>
+
+
+            <p><span>图片数量：</span>{{$v['pic']}}</p>
+        </div>
+        <dd>
+
+            <a url="{{:url('qrdel')}}?id={{$v['pid']}}&status=1" class="layui-recycle"><i class="fa fa-repeat"></i>
+                还原</a>
+            <a url="{{:url('qrdel')}}?id={{$v['pid']}}&status=2" class="layui-del"style="background:#333"><i class="fa fa-trash-o"></i>
+                彻底删除</a>
+        </dd>
+    </div>
+    {{endforeach}}
+
+</div>
+
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+
+    });
+
+
+    function search() {
+        var key = $("input[name='key']").val();
+        if (key == "") {
+            layer.msg('搜索条件不能为空', {icon: 2, shade: 0.3, time: 1200});
+            return false;
+        }
+        var url = "{{:url('hsz')}}?key=" + key;
+        location = url;
+    }
+
+
+    $(document).ready(function () {
+
+        $(".layui-del-all").click(function () {
+            var url = $(this).attr('url');
+            layer.confirm('你确定要清空回收站？', {
+                btn: ['是', '否'] //按钮
+            }, function () {
+                $.post(url, function (data) {
+                    layer.msg(data.msg, {icon: 1, time: 1000});
+                    setTimeout(function () {
+                        location = location;
+                    }, 1000);
+                }, "json");
+            });
+
+        });
+
+        $(".layui-del").click(function () {
+            var url = $(this).attr('url');
+            layer.confirm('你确定要彻底删除？', {
+                btn: ['是', '否'] //按钮
+            }, function () {
+                $.post(url, function (data) {
+                    layer.msg(data.msg, {icon: 1, time: 1000});
+                    setTimeout(function () {
+                        location = location;
+                    }, 1000);
+                }, "json");
+            });
+
+        });
+
+        $(".layui-recycle").click(function () {
+            var url = $(this).attr('url');
+            layer.confirm('你确定要还原？', {
+                btn: ['是', '否'] //按钮
+            }, function () {
+                $.post(url, function (data) {
+                    layer.msg(data.msg, {icon: 1, time: 1000});
+                    setTimeout(function () {
+                        location = location;
+                    }, 1000);
+                }, "json");
+            });
+
+        });
+
+    });
+</script>
+
+{{ $footer = 3; }}
+{{@need/footer}}
+</body>
+</html>
+<script>
+    layui.use(['form', 'layedit'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+    });
+</script>

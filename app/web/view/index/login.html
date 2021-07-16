@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0" name="viewport">
+    <meta content="yes" name="apple-mobile-web-app-capable">
+    <meta content="yes" name="apple-touch-fullscreen">
+    <meta content="black" name="apple-mobile-web-app-status-bar-style">
+    <meta content="320" name="MobileOptimized">
+    <meta content="telephone=no" name="format-detection">
+    <meta name="keywords" content="{{$siteConf['keywords']}}"/>
+    <meta name="description" content="{{$siteConf['description']}}"/>
+    <title>{{$siteConf['title']}}</title>
+    <link rel="stylesheet" href="/static/layui/css/layui.css" media="all">
+    <link rel="stylesheet" type="text/css" href="/static/user/css/login.css">
+</head>
+
+<body layadmin-themealias="default" style="background-image: url(/static/user/image/bj.jpg);background-size: cover;">
+
+<div class="layadmin-user-login layadmin-user-display-show" id="LAY-user-login" style="display: none;">
+
+    <div class="layadmin-user-login-main">
+        <div class="layadmin-user-login-box layadmin-user-login-header">
+            <h2>{{$siteConf['title']}}</h2>
+            <p>微营销平台员工管理系统</p>
+        </div>
+        <div action="login.php" method="post" id="form1">
+            <div class="layadmin-user-login-box layadmin-user-login-body layui-form">
+                <div class="layui-form-item">
+                    <label class="layadmin-user-login-icon layui-icon layui-icon-username"
+                           for="username"></label>
+                    <input type="text" name="account" id="username" lay-verify="required"
+                           placeholder="用户名" class="layui-input">
+                </div>
+                <div class="layui-form-item">
+                    <label class="layadmin-user-login-icon layui-icon layui-icon-password"
+                           for="password"></label>
+                    <input type="password" name="pass" id="password" lay-verify="required"
+                           placeholder="密码" class="layui-input">
+                </div>
+
+                <div class="layui-form-item" style="margin-bottom: 40px;">
+                    <!--<input type="checkbox" name="remember" lay-skin="primary" title="记住密码"><div class="layui-unselect layui-form-checkbox" lay-skin="primary"><span>记住密码</span><i class="layui-icon layui-icon-ok"></i></div>-->
+                </div>
+                <div class="layui-form-item">
+                    <button class="layui-btn layui-btn-fluid" lay-submit="" lay-filter="LAY-user-login-submit" id="login">登 录
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-trans layadmin-user-login-footer">
+        {{$siteConf['footer']}}
+    </div>
+
+
+</div>
+
+</body>
+<script type="text/javascript" src="/static/js/jquery.min.js"></script>
+<script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+<script src="/static/layer/layer.js"></script>
+<script src="//static.geetest.com/static/tools/gt.js"></script>
+<script>
+    $.ajax({
+        url: "{{:url('service/geet/index')}}?t=" + (new Date()).getTime(),
+        type: "post",
+        dataType: "json",
+        success: function (data) {
+            initGeetest({
+                gt: data.gt,
+                challenge: data.challenge,
+                new_captcha: data.new_captcha,
+                product: "bind",
+                offline: !data.success,
+                width: '100%'
+            }, handlerEmbed);
+        },
+        timeout: 10000,
+        error: function (XMLHttpRequest, textStatus, errorThrown) {
+            if (textStatus == "timeout") {
+                layer.msg('请求超时！');
+            } else {
+                layer.msg('服务器错误！');
+            }
+        }
+    });
+
+    var handlerEmbed = function (captchaObj) {
+        captchaObj.onReady(function () {
+            $("#wait").hide();
+        }).onSuccess(function () {
+            var result = captchaObj.getValidate();
+            var username = $("#username").val();
+            var password = $("#password").val();
+            if (username == '' || password == '') {
+                layer.alert('请确保每项不为空！', {icon: 5});
+                return false;
+            }
+            if (!result) {
+                layer.alert('请先完成滑动验证！', {icon: 5});
+                return false;
+            }
+            layer.msg('登录中...', {
+                icon: 16
+                , shade: 0.01
+                , time: false
+            });
+            $.ajax({
+                url: "{{:url('check')}}",
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    username: username,
+                    password: password,
+                    geetest_challenge: result.geetest_challenge,
+                    geetest_validate: result.geetest_validate,
+                    geetest_seccode: result.geetest_seccode
+                },
+                success: function (data) {
+                    layer.closeAll();
+                    if (data.code == 200) {
+                        captchaObj.reset();
+                        layer.alert(data.msg, {icon: 6}, function () {
+                            window.location.href = "{{:url('index')}}";
+                        });
+                    } else {
+                        captchaObj.reset();
+                        layer.alert(data.msg, {icon: 5});
+                    }
+                },
+                timeout: 10000,
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    layer.closeAll();
+                    if (textStatus == "timeout") {
+                        captchaObj.reset();
+                        layer.msg('请求超时！');
+                    } else {
+                        captchaObj.reset();
+                        layer.msg('服务器错误！');
+                    }
+                }
+            });
+        });
+        $(document).keyup(function (event) {
+            if (event.keyCode == 13) {
+                $("#login").click();
+            }
+        });
+        $("#login").click(function () {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            if (username == '' || password == '') {
+                layer.alert('请确保每项不为空！', {icon: 5});
+                return false;
+            }
+            captchaObj.verify();
+        });
+    };
+</script>
+
+</html>

@@ -1,0 +1,562 @@
+{{@need/header}}
+<style>
+    body {
+        background: #eee;
+    }
+
+    .kf-thumb-dl {
+        width: 94%;
+        overflow: hidden;
+        margin: 10px 2%;
+        background: #fff;
+        border-radius: 3px;
+        float: left;
+    }
+
+    .kf-thumb-dl h1 {
+        width: 100px;
+        margin: 0px auto 10px auto;
+        text-align: center;
+        background: #28b0e4;
+        font-size: 16px;
+        color: #fff;
+        height: 30px;
+        line-height: 30px;
+    }
+
+    .kf-thumb-dl dl {
+        margin: 0px 5% 10px 5%;
+        color: #fff;
+        font-size: 14px;
+        overflow: hidden;
+    }
+
+    .kf-thumb-dl dl dt {
+        background: #1e9fff;
+    }
+
+    .kf-thumb-dl dl dd {
+        background: #ff736f;
+    }
+
+    .kf-thumb-dl dl dt, .kf-thumb-dl dl dd {
+        width: 45%;
+        margin: 2.5%;
+        float: left;
+        text-align: center;
+        height: 35px;
+        line-height: 35px;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .kf-thumb-dl-l {
+        margin: 8px;
+        line-height: 25px;
+        text-align: center;
+        color: #999;
+    }
+
+    .kf-thumb-dl-l img {
+        width: 50px;
+    }
+
+    .kf-thumb-dl-r {
+        line-height: 23px;
+        font-size: 13px;
+    }
+
+    .kf-thumb-dl-r p {
+        color: #999;
+    }
+
+    .kf-thumb-dl-r p:nth-child(1) {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        width: 230px;
+        overflow: hidden;
+    }
+
+    .kf-thumb-dl-r p span {
+        color: #333;
+    }
+
+    .topup-bg {
+        width: 100%;
+        height: 100%;
+        background: #000;
+        opacity: 0.5;
+        position: fixed;
+        z-index: 8;
+        display: none;
+    }
+
+    .topup-close {
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        top: 165px;
+        left: 50%;
+        margin-left: -20px;
+        line-height: 25px;
+        border-radius: 50%;
+        background: #eee;
+        position: fixed;
+        z-index: 8;
+        display: none;
+    }
+
+    .topup {
+        width: 80%;
+        margin: 140px 5%;
+        overflow: hidden;
+        padding: 5%;
+        background: #eee;
+        position: fixed;
+        z-index: 9;
+        display: none;
+    }
+
+    .topup dl li {
+        font-size: 14px;
+        line-height: 40px;
+    }
+
+    .topup dl dt input {
+        width: 100%;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 16px;
+    }
+
+    .topup dl dd {
+        height: 40px;
+        line-height: 40px;
+        text-align: center;
+        background: #1E9FFF;
+        color: #fff;
+        margin: 20px 0px;
+        cursor: pointer;
+    }
+
+    .wx-check {
+        position: fixed;
+        z-index: 11;
+        top: 150px;
+        padding: 3% 0 5% 0;
+        left: 0px;
+        background: #fff;
+        border-radius: 3px;
+        width: 90%;
+        margin: 0px 5%;
+        display: none;
+    }
+
+    .wx-close {
+        height: 40px;
+        text-align: center;
+        width: 40px;
+        left: 50%;
+        margin-left: -20px;
+        top: 130px;
+        line-height: 25px;
+        font-size: 16px;
+        background: #fff;
+        border-radius: 20px;
+        position: fixed;
+        z-index: 12;
+        display: none;
+    }
+
+    .wx-bg {
+        position: fixed;
+        z-index: 10;
+        top: 0px;
+        left: 0px;
+        background: #000;
+        width: 100%;
+        height: 100%;
+        opacity: 0.7;
+        display: none;
+    }
+
+    .wx-body {
+        position: fixed;
+        z-index: 11;
+        top: 80px;
+        padding: 3% 0 5% 0;
+        left: 0px;
+        background: #fff;
+        border-radius: 3px;
+        width: 90%;
+        margin: 0px 5%;
+        display: none;
+    }
+
+    .wx-zuigao {
+        text-align: center;
+        margin: 30px auto;
+    }
+
+    .wx-zuigao i {
+        color: red;
+    }
+
+
+    .wx-check2 {
+        position: fixed;
+        z-index: 11;
+        top: 150px;
+        padding: 3% 0 5% 0;
+        left: 0px;
+        background: #fff;
+        border-radius: 3px;
+        width: 90%;
+        margin: 0px 5%;
+        display: none;
+    }
+
+    .wx-close2 {
+        height: 40px;
+        text-align: center;
+        width: 40px;
+        left: 50%;
+        margin-left: -20px;
+        top: 130px;
+        line-height: 25px;
+        font-size: 16px;
+        background: #fff;
+        border-radius: 20px;
+        position: fixed;
+        z-index: 12;
+        display: none;
+    }
+
+    .wx-bg2 {
+        position: fixed;
+        z-index: 10;
+        top: 0px;
+        left: 0px;
+        background: #000;
+        width: 100%;
+        height: 100%;
+        opacity: 0.7;
+        display: none;
+    }
+
+    .head-title a.fa-cloud-upload {
+        width: 45px;
+        height: 45px;
+        line-height: 45px;
+        font-size: 24px;
+        text-align: center;
+        top: 0px;
+        right: 0px;
+        position: absolute;
+        color: #fff;
+    }
+</style>
+<div class="head-title">
+    <a class="fa fa-angle-left" href="javascript:history.go(-1)"></a>{{$res['name']}}(图片{{$num}})
+    <a href="javascript:void(0)" onclick="upimg()" class="fa fa-cloud-upload"></a>
+</div>
+<div class="h-45"></div>
+
+
+<div class="wx-bg"></div>
+<div class="wx-close" onclick="wxClose();">X</div>
+<div class="wx-check">
+    <div style=" width:94%; margin:30px auto;">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-form-item">
+                <label class="layui-form-label">切换次数</label>
+                <div class="layui-input-block">
+                    <input name="change_number" type="tel" maxlength="5" class="layui-input">
+                </div>
+            </div>
+            <input name="qid" id="qid" type="hidden" value=""/>
+            <div class="wx-zuigao"><i class="fa fa-exclamation-triangle"></i> 切换次数不能超过10万次</div>
+        </form>
+
+        <div class="layui-form-item" style="text-align:center;">
+            <button class="layui-btn" type="button" onclick="submit()" style="background-color:#1E9FFF;">点击提交</button>
+        </div>
+    </div>
+</div>
+
+
+<div class="wx-bg2"></div>
+<div class="wx-close2" onclick="wxClose2();">X</div>
+<div class="wx-check2">
+    <div style=" width:94%; margin:30px auto;">
+        <form class="layui-form layui-form-pane">
+            <div class="layui-form-item">
+                <label class="layui-form-label">图片备注</label>
+                <div class="layui-input-block">
+                    <input name="qrname" id="qrname" type="text" maxlength="20" class="layui-input">
+                </div>
+            </div>
+
+            <div class="wx-zuigao"><i class="fa fa-exclamation-triangle"></i> 图片备注仅用来区分图片，可不填</div>
+
+        </form>
+        <div class="layui-form-item" style="text-align:center;">
+            <button class="layui-btn" type="button" id="uploadOne" style="background-color:#1E9FFF;"><i
+                    class="fa fa-cloud-upload"></i>上传图片
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div class="uploadThumb" onclick="upimg()"><i class="fa fa-cloud-upload"> 上传图片</i><input type="button"></div>
+
+<div class="layui-form">
+    {{foreach ($pic as $k => $v) :}}
+    <div class="kf-thumb-dl" style="border:3px solid #28b0e4;">
+        <h1>序号：{{$k+1}}</h1>
+        <div class="kf-thumb-dl-l fl">
+            <img src="{{ if code="$siteConf['jm'] == 1"}}/qr/{{:base64_encode($v['url'])}}{{else}}{{$v['url']}}{{if}}"
+                 onclick="imgThumb(this)" title="点击查看图片"/>
+            <br/>缩略图
+        </div>
+        <div class="kf-thumb-dl-r fl">
+            <p><span>页面标题：</span>{{$res['title']}}</p>
+            <p><span>图片备注：</span>{{$v['meta']}}</p>
+            <p><span>切换次数：</span>{{$v['switch']}}</p>
+            <p><span>扫描次数：</span>{{$v['scan']}}</p>
+            <p><span>加好友量：</span>{{$v['plus']}}</p>
+            <p><span>创建时间：</span>{{:date('Y-m-d H:i:s', $v['createTime'])}}</p>
+        </div>
+        <div class="c"></div>
+        <dl>
+            <dt onclick="updateNumber({{$v['id']}})">修改切换次数</dt>
+            <dd onclick="delThumb({{$v['id']}})">删 除</dd>
+        </dl>
+    </div>
+    {{endforeach}}
+    <input type="hidden" value="{{$res['pid']}}" id="gid"/>
+</div>
+<div class="c"></div>
+
+<style type="text/css">.consultation {
+    display: block;
+    position: fixed;
+    right: 8px;
+    bottom: 25%;
+    width: 55px;
+    height: 40px;
+    background-size: 55px;
+    background-repeat: no-repeat;
+    background-position: 50%;
+    z-index: 999
+}
+
+.consultation.svg {
+    border-radius: 100%;
+    text-align: center;
+    padding-top: 14px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, .4)
+}
+
+.consultation.svg > svg {
+    height: 28px
+}
+
+.pc .consultation {
+    width: 90px;
+    height: 90px;
+    background-size: 90px;
+    right: 50%;
+    margin-right: -323px
+}
+
+.pc .consultation.svg {
+    padding-top: 26px
+}
+
+.pc .consultation.svg > svg {
+    height: 40px
+}</style>
+<a id="consultation" href="{{:url('link')}}?id={{$res['pid']}}" class="consultation svg"
+   style="background-color: #EB193A;background-image: linear-gradient(141deg, #FC8158 0%, #EB193A 75%);">
+    <svg t="1574694752544" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+         p-id="2221" width="53" height="53">
+        <path d="M192 480a32 32 0 0 1-32-32V192a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32v256a32 32 0 0 1-32 32z m32-64h192V224H224zM576 480a32 32 0 0 1-32-32V192a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32v256a32 32 0 0 1-32 32z m32-64h192V224h-192zM192 864a32 32 0 0 1-32-32v-256a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32v256a32 32 0 0 1-32 32z m32-64h192v-192H224zM800 800v-96a32 32 0 0 1 64 0v128a32 32 0 0 1-32 32h-160a32 32 0 0 1 0-64zM576 608a32 32 0 0 1 0-64h224a32 32 0 0 1 0 64z"
+              p-id="2222" fill="#ffffff"></path>
+        <path d="M672 736a32 32 0 0 1 0-64h64a32 32 0 0 1 0 64zM544 768a32 32 0 0 1 64 0v64a32 32 0 0 1-64 0z"
+              p-id="2223" fill="#ffffff"></path>
+    </svg>
+</a>
+
+<script>
+
+    function imgThumb(obj) {
+
+        var img = $(obj).attr('src');
+        /*layer.open({
+          type: 1,
+          title:'缩略图',
+          content: '<img src="'+img+'" width="250px;"/>'
+        });*/
+
+        layer.open({
+            type: 1,
+            title: '缩略图',
+            skin: '', //加上边框
+            area: ['280px', '460px'], //宽高
+            content: '<img src="' + img + '" width="280"/>'
+        });
+
+    }
+
+
+    function delThumb(qid) {
+        var url = "{{:url('picDel')}}?id=" + qid;
+        layer.confirm('您确定要删除？', {
+            btn: ['是', '否'] //按钮
+        }, function () {
+            $.post(url, function (data) {
+                if (data.code == 200) {
+                    layer.msg(data.msg, {icon: 1, time: 1000});
+                    setTimeout(function () {
+                        location = location;
+                    }, 1000);
+                } else {
+                    layer.msg(data.msg, {icon: 5});
+                }
+            }, "json");
+        });
+    }
+
+    function updateNumber(qid) {
+
+        $('.wx-bg').show();
+        $('.wx-check').show();
+        $('.wx-close').show();
+        $('#qid').val(qid);
+
+        /*layer.prompt({title: '请填写切换次数',}, function(change_number, index){
+          if(!change_number || isNaN(change_number) ){	layer.msg('请填写正确的切换次数!',{icon:7,time:2000,shift:6});	return false; }
+          if(change_number < 0 || change_number >= 100000 ){layer.msg('切换次数不能超过10万次',{icon:7,time:2000,shift:6});	return false; }
+          layer.close(index);
+          submit(change_number,qid);
+        });*/
+
+    }
+
+    function upimg() {
+
+        $('.wx-bg2').show();
+        $('.wx-check2').show();
+        $('.wx-close2').show();
+    }
+
+
+    function submit() {
+        var qid = $("input[name='qid']").val();
+        var change_number = $("input[name='change_number']").val();
+        if (!change_number || isNaN(change_number)) {
+            layer.msg('请填写正确的切换次数!', {icon: 7, time: 2000, shift: 6});
+            return false;
+        }
+
+        if (change_number < 0 || change_number >= 100000) {
+            layer.msg('切换次数不能超过10万次', {icon: 7, time: 2000, shift: 6});
+            return false;
+        }
+
+        layer.msg('<p>提交中...</p>', {icon: 16, shade: 0.5, time: false});
+        $.post("{{:url('changeNum')}}", {"id": qid, "num": change_number}, function (data) {
+            layer.closeAll();
+            if (data.code == 200) {
+                layer.msg(data.msg, {icon: 1, time: 1000});
+                setTimeout(function () {
+                    location = location;
+                }, 1000);
+            } else {
+                layer.msg(data.msg, {icon: 5});
+            }
+        }, "json");
+    }
+
+    function wxClose() {
+        $('.wx-bg').hide();
+        $('.wx-check').hide();
+        $('.wx-close').hide();
+    }
+
+    function wxClose2() {
+        $('.wx-bg2').hide();
+        $('.wx-check2').hide();
+        $('.wx-close2').hide();
+    }
+
+    layui.config({
+        base: '/static/user/js/'
+    }).extend({
+        aliossUploader: 'aliossUploader'
+    }).use(['aliossUploader'], function () {
+        var aliossUploader = layui.aliossUploader;
+        aliossUploader.render({
+            elm: '#uploadOne',
+            region: 'oss-cn-qingdao',
+            bucket: 'qr-code-anderyly',
+            accessidFiled: 'accessid',
+            policyFiled: 'policy',
+            signatureFiled: 'signature',
+            policyData: {},
+            policyHeader: {
+                Authorization: layui.data('qunqrcode2').Authorization
+            },
+            policyUrl: "/get.php",
+            prefixPath: 'qrcode/',
+            fileType: 'images',
+            multiple: false,
+            httpStr: 'http',
+            allUploaded: function (res) {
+
+                var ossurl = res[0].ossUrl;
+                if (ossurl != '') {
+                    var gid = $('#gid').val();
+                    var qrname = $('#qrname').val();
+                    $.ajax({
+                        type: "POST",
+                        data: {ossurl: ossurl, id: gid, qrname: qrname},
+                        dataType: "json",
+                        url: "{{:url('qrcodeadd')}}",
+                        success: function (result) {
+                            layer.closeAll()
+                            if (result.code == 200) {
+                                layer.msg(result.msg, {icon: 1, time: 1000});
+                                setTimeout(function () {
+                                    location = location;
+                                }, 1000);
+                            } else {
+                                layer.msg(result.msg, {icon: 5});
+                            }
+                        }
+                    });
+                }
+            },
+            policyFailed: function (res) {
+                layer.msg('上传失败，请刷新页面重试', {icon: 5});
+            }, uploadRenderData: {
+                size: 2048
+            }
+        });
+    });
+</script>
+{{ $footer = 2; }}
+{{@need/footer}}
+</body>
+</html>
+<script>
+    layui.use(['form', 'layedit'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+    });
+</script>

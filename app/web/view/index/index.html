@@ -1,0 +1,207 @@
+{{@need/header}}
+<body class="bg">
+<header style="background:#2ba691">
+    <a href="javascript:;" onclick="logout();" class="exit fa fa-power-off"> 退出登录</a>
+    <a href="{{:url('user/pass')}}" class="exit fa fa-unlock-alt" style="margin-right:15px;"> 修改密码</a>
+    <br/>
+    <h1 style="text-align:center;margin-top:35px;font-size:16pt;color:#fff">admin</h1>
+    <div class="topinf">
+        <ul>
+            <li><i>{{$data['todayScan']}}</i><br>今日扫码</li>
+            <li><i>{{$data['todayPlus']}}</i><br>今日加好友</li>
+            <li><i>{{$data['yedayScan']}}</i><br>昨日扫码</li>
+            <li><i>{{$data['yedayPlus']}}</i><br>昨日加好友</li>
+        </ul>
+    </div>
+</header>
+
+<style>
+    .level-time {
+        margin: -25px 20px 45px 20px;
+        padding: 0px 10px;
+        height: 50px;
+        line-height: 50px;
+        background: #fff;
+        overflow: hidden;
+        border-radius: 6px;
+    }
+
+    .level-time dt {
+        float: left;
+        color: #000;
+        font-weight: bold;
+    }
+
+    .level-time dd {
+        float: right;
+    }
+
+    .layui-form-switch {
+        margin-top: 0px;
+    }
+
+    .layui-form-onswitch {
+        border-color: #1E9FFF;
+        background-color: #1E9FFF;
+    }
+
+    .fr {
+        float: right;
+    }
+</style>
+
+<div class="level-time">
+    <dt>余量提醒</dt>
+    <!--<dd>服务器到期时间：每月9号&nbsp;<span onclick="wxBody(1);" class="layui-badge layui-bg-red" style="padding:3px 5px;"><i class="fa fa-bell"></i> 续费</span></dd>-->
+    <div class="wx-check-r fr">域名检测剩余：<font color="red"><b id="checkNum">{{$siteConf['yl']}}</b>&nbsp;</font> <span
+            onclick="congzi();"
+            class="layui-badge layui-bg-blue"
+            style="padding:3px 5px;"><i
+            class="fa fa-plus-circle"></i> 充值</span></div>
+    <div class="c"></div>
+    <div class="wx-check-div">
+
+    </div>
+</div>
+
+<div class="amto">
+
+    <div class="info">
+        <p>我的应用</p>
+        <dl>
+            <dd><a href="{{:url('Set/op')}}"><i class="fa fa-cogs"></i><br>系统设置</a></dd>
+            <dd><a href="{{:url('Chart/index')}}"><i class="fa fa-bar-chart"></i><br>活码统计</a></dd>
+            <dd><a href="{{:url('Qrcode/index')}}"><i class="fa fa-qrcode"></i><br>活码列表</a></dd>
+            <dd><a onclick="wxCheck();"><i class="fa fa-refresh"></i><br>域名检测</a></dd>
+            <dd><a href="{{:url('Set/access')}}"><i class="fa fa fa-shield"></i><br>地区屏蔽</a>
+            </dd>
+        </dl>
+    </div>
+
+    <div class="info">
+        <p>活码推广统计 <span style="color:#72a3ef;" id="ctips" onclick="ctips()"><i
+                class="fa fa-exclamation-circle"></i></span></p>
+        <dl id="orderCount">
+            <dt><span>{{$data['todayScan']}}</span><br>今日扫码量</dt>
+            <dt><span>{{$data['todayPlus']}}</span><br>今日加好友</dt>
+            <dt><span>{{$data['todayZ']}}%</span><br>今日转化率</dt>
+
+
+            <dt><span>{{$data['yedayScan']}}</span><br>昨日扫码量</dt>
+            <dt><span>{{$data['yedayPlus']}}</span><br>昨日加好友</dt>
+            <dt><span>{{$data['yedayZ']}}%</span><br>昨日转化率</dt>
+
+            <dt><span>{{$data['mScan']}}</span><br>本月扫码量</dt>
+            <dt><span>{{$data['mPlus']}}</span><br>本月加好友</dt>
+            <dt><span>{{$data['mZ']}}%</span><br>本月转化率</dt>
+
+            <dt><span>{{$data['zmScan']}}</span><br>上月扫码量</dt>
+            <dt><span>{{$data['zmPlus']}}</span><br>上月加好友</dt>
+            <dt><span>{{$data['zmZ']}}%</span><br>上月转化率</dt>
+
+        </dl>
+    </div>
+
+</div>
+
+{{ $footer = 1; }}
+{{@need/footer}}
+</body>
+</html>
+
+<script>
+    layui.use(['form', 'layedit'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+    });
+</script>
+<script charset="utf-8">
+    // var num = {{$siteConf['dwz_num']}};
+    // if (num < 100) {
+    //     alert('短网址生成数量不足100，请联系技术充值');
+    // }
+    function logout() {
+        layer.msg('<p>退出登录中...</p>', {icon: 16, shade: 0.5, time: false});
+        $.get("{{:url('logout')}}", function (data) {
+            setTimeout(function () {
+                location = "{{:url('web/index/login')}}";
+            }, 1000);
+        });
+        
+    }
+
+    function ctips() {
+        layer.tips('加好友是指用户长按了你上传的二维码图片，无法判断用户有没有点击添加到通讯录（仅供参考）', '#ctips', {
+            tips: [1, '#3595CC'],
+            time: 6000
+        });
+    }
+
+    function wxCheck() {
+        layer.msg('<p id="domainnum">检测中请耐心等待...</p>', {icon: 16, shade: 0.5, time: false});
+        $.get("{{:url('wxCheck')}}", function (data) {
+            ocd(data);
+        }, "json");
+    }
+
+    function ocd(data) {
+        // if (data.code == 200) {
+        //     $("#domainnum").html(data.msg);
+        //     $.get(data.url, function (obj) {
+        //         setTimeout(function () {
+        //             ocd(obj);
+        //         }, 1000);
+        //     }, "json");
+        //
+        // } else
+            if (data.code == 201) {
+            layer.msg(data.msg, {icon: 0, shade: 0.5, time: 2000});
+        } else if (data.code == 200) {
+            $("#domainnum").html('已经完成100%');
+            setTimeout(function () {
+                layer.msg('未检测出异常域名', {icon: 1, shade: 0.3, time: 1200});
+            }, 1000);
+        } else {
+            layer.msg(data.msg, {icon: 1, shade: 0.3, time: 1200});
+            setTimeout(function () {
+                location = "{{:url('index')}}";
+            }, 1200);
+        }
+    }
+
+    function wxCheckUser() {
+        layer.msg('<p id="domainnum">检测中请耐心等待...</p>', {icon: 16, shade: 0.5, time: false});
+        $.get("/admin/System/userocd?key=0&xb=1", function (data) {
+            userocd(data);
+        }, "json");
+    }
+
+    function userocd(data) {
+        if (data.status == 1) {
+            $("#domainnum").html(data.msg);
+            $.get(data.url, function (obj) {
+                setTimeout(function () {
+                    userocd(obj);
+                }, 1000);
+            }, "json");
+
+        } else if (data.status == 2) {
+            layer.msg(data.msg, {icon: 0, shade: 0.5, time: 2000});
+        } else if (data.status == 3) {
+            $("#domainnum").html('已经完成100%');
+            setTimeout(function () {
+                layer.msg('未检测出异常域名', {icon: 1, shade: 0.3, time: 1200});
+            }, 1000);
+        } else {
+            layer.msg(data.msg, {icon: 1, shade: 0.3, time: 1200});
+            setTimeout(function () {
+                location = "/admin/mindex/domaincheckuser.html";
+            }, 1200);
+        }
+    }
+
+    function congzi() {
+        layer.msg('如有需要请联系技术支持充值', {icon: 1, shade: 0.4, time: 1800});
+    }
+
+</script>

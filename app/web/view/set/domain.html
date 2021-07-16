@@ -1,0 +1,159 @@
+{{@need/header}}
+<style>
+    html {
+        background: #f2f3f7;
+    }
+
+    body {
+        background: #f2f3f7;
+    }
+
+    .domain-dl dl {
+        padding: 3%;
+        border-bottom: 1px solid #eee;
+        overflow: hidden;
+    }
+
+    .domain-dl dl li {
+        color: #999;
+        margin-top: 10px;
+    }
+
+    .domain-dl dl li i {
+        color: red;
+        font-size: 16px;
+    }
+
+    .domain-dl-dd dt {
+        float: left;
+        margin-right: 15px;
+    }
+
+    .domain-dl dl dd p {
+        color: #999;
+        margin-bottom: 5px;
+    }
+
+    .domain-dl dl dd p i {
+        color: red;
+        font-size: 16px;
+    }
+
+    .domain-dl dl dd p a {
+        color: #4ca8f8;
+        line-height: 30px;
+    }
+
+    .domain-dl dl dd span {
+        background: #1e9fff;
+        color: #fff;
+        height: 28px;
+        line-height: 28px;
+        padding: 0px 20px;
+        text-align: center;
+        display: inline-block;
+        border-radius: 2px;
+    }
+
+    .domain-dl dl dt span {
+        font-weight: bold;
+        color: red;
+        font-size: 16px;
+    }
+
+    .domain-dl-dt {
+        color: #1e9fff;
+        font-size: 16px;
+    }
+
+    .domain-dl dl ol {
+        color: #999;
+        margin: 10px 0;
+    }
+
+    .domain-dl dl ol i {
+        color: red;
+        font-size: 16px;
+    }
+
+    .huoma-a a {
+        width: 33.333%
+    }
+
+    ;
+</style>
+<div class="head-title"><a class="fa fa-angle-left" href="javascript:history.go(-1)"></a>系统设置</div>
+<div class="h-45"></div>
+<div class="huoma-a">
+    <a href="{{:url('domain')}}" class="huoma-on"><i class="fa fa-link"></i>域名设置</a>
+    <a href="{{:url('op')}}"><i class="fa fa-cog"></i>功能设置</a>
+    <a href="{{:url('access')}}"><i class="fa fa-globe fa-l"></i>地区设置</a>
+</div>
+<div class="new-body">
+    <form>
+
+        <div class="domain-dl layui-form">
+
+            <dl style="border-bottom:0px;padding-bottom:0.1%;">
+                <dt></dt>
+                <dd>
+                    <li><i class="fa fa-exclamation-circle"></i> 系统IP地址：{{$ip}}，多个域名中间以 = 隔开。不要有http://</li>
+                </dd>
+            </dl>
+
+
+            <dl style="border-bottom:0px;padding-bottom:0.1%;">
+                <dt class="domain-dl-dt">入口域名</dt>
+                <!--<ol><i class="fa fa-exclamation-circle"></i> 当前域名个数 <kbd>3</kbd>，一行一个域名，不带http://，不能有空行</ol>-->
+                <dd><textarea name="rk" placeholder="多个域名，中间以 = 隔开" class="layui-textarea"
+                              style="height:240px;width:100%;">{{$siteConf['rk']}}</textarea></dd>
+            </dl>
+
+            <dl style="border-bottom:0px;padding-bottom:0.1%;">
+                <dt class="domain-dl-dt">落地域名</dt>
+                <dd><textarea name="ld" placeholder="多个域名，中间以 = 隔开" class="layui-textarea"
+                              style="height:160px;width:100%;">{{$siteConf['ld']}}</textarea></dd>
+            </dl>
+            
+            <dl style="border-bottom:0px;padding-bottom:0.1%;">
+                <dt class="domain-dl-dt">三方域名</dt>
+                <dd><textarea name="dsf_url" placeholder="多个域名，中间以 = 隔开" class="layui-textarea"
+                              style="height:160px;width:100%;">{{$siteConf['dsf_url']}}</textarea></dd>
+            </dl>
+
+
+<!--            <input type="hidden" id="domain_check" name="domain_check" value="1"/>-->
+
+        </div>
+    </form>
+    <div class="submit" onclick="submit();">提交保存</div>
+</div>
+<script type="text/javascript">
+
+
+    function submit() {
+
+        layer.msg('<p>提交中...</p>', {icon: 16, shade: 0.5, time: false});
+        $.post("{{:url('saveAjax')}}", $("form").serialize(), function (data) {
+            layer.closeAll();
+            if (data.code == 200) {
+                layer.msg(data.msg, {icon: 1, time: 1000});
+            } else {
+                layer.msg(data.msg, {icon: 7, time: 3000});
+            }
+        }, "json");
+    }
+
+
+</script>
+
+{{ $footer = 0; }}
+{{@need/footer}}
+</body>
+</html>
+<script>
+    layui.use(['form', 'layedit'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+    });
+</script>

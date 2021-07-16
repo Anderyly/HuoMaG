@@ -1,0 +1,94 @@
+{{@need/header}}
+<style>
+    html{ background:#f2f3f7;}
+    body{ background:#f2f3f7;}
+    .domain-dl dl{ padding:3%; border-bottom:1px solid #eee; overflow:hidden;}
+    .domain-dl dl li{ color:#999; margin-top:10px;}
+    .domain-dl dl li i{ color:red; font-size:16px;}
+    .domain-dl-dd dt{ float:left; margin-right:15px;}
+    .domain-dl dl dd p{color:#999; margin-bottom:5px;}
+    .domain-dl dl dd p i{color:red; font-size:16px;}
+    .domain-dl dl dd p a{ color:#4ca8f8; line-height:30px;}
+    .domain-dl dl dd span{ background:#1e9fff; color:#fff; height:28px; line-height:28px;padding:0px 20px; text-align:center; display: inline-block; border-radius:2px;}
+    .domain-dl dl dt span{ font-weight: bold; color: red; font-size: 16px;}
+    .domain-dl-dt{ color:#1e9fff; font-size:16px;}
+    .domain-dl dl ol{ color:#999; margin:10px 0;}
+    .domain-dl dl ol i{ color:red; font-size:16px;}
+    .huoma-a a{width:33.333%};
+</style>
+<div class="head-title"><a class="fa fa-angle-left" href="javascript:history.go(-1)"></a>活码设置</div>
+<div class="h-45"></div>
+
+<div class="new-body">
+    <form>
+        <div class="domain-dl layui-form">
+
+            <dl class="domain-dl-dd">
+                <dt>活码图片随机显示</dt>
+                <input type="hidden" name="show" value="2">
+                <dd>
+                    <input type="checkbox" checked name="show" value="{{$user['show']}}" lay-skin="switch" lay-filter="switchtag" lay-text="开启|关闭">
+                    <div class="layui-unselect layui-form-switch {{if code="$user['show'] == 1"}}layui-form-onswitch{{if}}" lay-skin="_switch"><em>开启</em><i></i></div>
+                </dd>
+                <li><i class="fa fa-exclamation-circle"></i> 开启“活码图片随机显示”后，如果同一个活码下有多张图片，则每次随机显示一张，不开启默认按切换次数依次替换。</li>
+            </dl>
+
+
+            <!--<dl class="domain-dl-dd">
+                <dt>防止用户重复添加</dt>
+                <input type="hidden" name="cache" value="2">
+                <dd>
+                                    <input type="checkbox" name="cache" value="1" lay-skin="switch" lay-filter="switchtag" lay-text="开启|关闭">
+                        <div class="layui-unselect layui-form-switch" lay-skin="_switch"><em>关闭</em><i></i></div>
+                            </dd>
+                <li><i class="fa fa-exclamation-circle"></i> 开启“防止用户重复添加”后，用户扫过一次活码就会记录到他扫出来显示的那个二维码，下次扫还是显示这个二维码，可以防止同行乱扫码恶意举报。</li>
+            </dl>-->
+
+        </div>
+    </form>
+</div>
+
+<script type="text/javascript">
+    layui.use(['form'], function(){
+        var form = layui.form;
+
+        var timer = 0;
+
+        //监听switch开关
+        form.on('switch(switchtag)', function(data){
+
+            //300毫秒内的截留
+            if (timer) {
+                clearTimeout(timer);
+            }
+            timer = setTimeout(()=> {
+                submit();
+            }, 200);
+        });
+
+    });
+
+
+    function submit(){
+        //layer.msg('<p>提交中...</p>',{icon: 16,shade: 0.5,time:false});
+        $.post("{{:url('user/set')}}",$("form").serialize(),function(data){
+            //layer.closeAll();
+            if(data.code == 1){
+                layer.msg(data.msg,{icon:1,time:600});
+            }else{
+                layer.msg(data.msg,{icon:7,time:2000});
+            }
+        }, "json");
+    }
+</script>
+
+{{ $footer = 0; }}
+{{@need/footer}}
+</body>
+</html>
+<script>
+    layui.use(['form', 'layedit'], function(){
+        var form = layui.form
+            ,layer = layui.layer;
+    });
+</script>

@@ -1,0 +1,163 @@
+{{@need/header}}
+<style>
+    html {
+        background: #f2f3f7;
+    }
+
+    body {
+        background: #f2f3f7;
+    }
+
+    .info-qrcode {
+        font-size: 14px !important;
+    }
+</style>
+<script src="/static/user/clipboard.min.js"></script>
+<script src="/static/user/qrcode/qrcode.min.js"></script>
+
+
+<div id="getQrcode" class="hide">
+    <div id="qrcode" style="border: 3px solid rgb(255, 255, 255);"></div>
+    <div style="text-align:center;margin-top:3px;">
+        <button type="button" class="layui-btn layui-btn-normal" style="margin:3px;" onclick="dwz()">转换短码</button>
+    </div>
+</div>
+
+<div class="head-title"><a class="fa fa-angle-left" href="javascript:history.go(-1)"></a>{{$res['name']}}</div>
+<div class="h-45"></div>
+
+<div class="huoma-a">
+	<a href="{{:url('link')}}?id={{$res['pid']}}&type=1" {{if code="$type != 2 and $type != 3"}}class="huoma-on"{{if}}><i class="fa fa-link"></i> 普通推广</a>
+	<a href="{{:url('link')}}?id={{$res['pid']}}&type=2" {{if code="$type == 2"}}class="huoma-on"{{if}}><i class="fa fa-internet-explorer"></i> 三方推广</a>
+</div>
+
+<div class="layui-form">
+    <p style="margin:3%;color:#999;"><i class="fa fa-exclamation-circle" style="color:#1E9FFF;"></i>短码采用的是腾讯的短链接有一定防封性，并且更简洁，请根据需要自行转换。
+    </p>
+    {{foreach ($ld as $k => $v) :}}
+    <div class="user-list">
+        <dl style="margin-bottom:15px;">
+            <dt>序号：{{$k+1}}</dt>
+            <dd>域名：{{$v}}</dd>
+        </dl>
+        <li>
+            <a class="copy_bsp"
+               copy_text="{{if code="$type == 3"}}{{:kdwz($v, $res['code'])}}{{else}}http://{{$v}}/code/{{$res['code']}}{{if}}"><i
+                    class="fa fa-link"></i> 复制推广链接</a>
+            <a class="info-qrcode"
+               url="{{if code="$type == 3"}}{{:kdwz($v, $res['code'])}}{{else}}http://{{$v}}/code/{{$res['code']}}{{if}}"
+               style="background:#28c091;"><i class="fa fa-qrcode"></i> 查看推广码</a>
+        </li>
+    </div>
+    {{endforeach}}
+</div>
+<script type="text/javascript">
+    layui.use(['form'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+
+    });
+
+    var qrcode = new QRCode(document.getElementById("qrcode"), {
+        text: "",
+        width: 280,
+        height: 280,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+    });
+    var qrlinks = "";
+    $(document).ready(function () {
+
+        //复制粘贴
+        $('.copy_bsp').click(function () {
+            var copytext = $(this).attr('copy_text');
+            var clipboard = new ClipboardJS('.copy_bsp', {
+                text: function () {
+                    return copytext;
+                }
+            });
+            clipboard.on('success', function (e) {
+                layer.msg('已复制到剪贴板，可贴粘。', {icon: 1, time: 1500});
+            });
+        });
+
+        $(".info-qrcode").click(function () {
+            var qrcodeUrl = $(this).attr('url');
+            qrlinks = qrcodeUrl;
+            qrcode.clear();
+            qrcode.makeCode(qrcodeUrl);
+
+            layer.open({
+                type: 1,
+                title: '长按二维码保存到手机',
+                shadeClose: false,
+                shade: 0.5,
+                area: ['300px', '380px'],
+                content: $("#getQrcode") //iframe的url
+            });
+        });
+    });
+
+    function dwz() {
+        var loadtis = layer.msg('<p>转换中...</p>', {icon: 16, shade: 0.5, time: false});
+        $.ajax({
+            type: "POST",
+            url: "{{:url('dwz')}}?url=" + encodeURIComponent(qrlinks),
+            dataType: "json",
+            success: function (result) {
+                layer.close(loadtis);
+                if (result.code == 200) {
+                    qrcode.clear();
+                    qrcode.makeCode(result.data.dwz);
+                    layer.msg("转换成功", {icon: 1, time: 1000});
+                } else {
+                    alert(result.msg);
+                }
+            }, error: function (result) {
+                layer.close(loadtis);
+                alert("网络异常，请刷新页面重试。");
+            }
+        });
+    }
+
+    function dwz2(qrlink) {
+        var loadtis = layer.msg('<p>转换中...</p>', {icon: 16, shade: 0.5, time: false});
+        $.ajax({
+            type: "POST",
+            url: "/salesman/Index/dwz?qrlink=" + encodeURIComponent(qrlink),
+            dataType: "json",
+            success: function (result) {
+                layer.close(loadtis);
+                if (result.status == "0") {
+                    qrcode2.makeCode(result.msg);
+                    layer.msg("转换成功", {icon: 1, time: 1000});
+                } else {
+                    alert(result.msg);
+                }
+            }, error: function (result) {
+                layer.close(loadtis);
+                alert("网络异常，请刷新页面重试。");
+            }
+        });
+
+    }
+
+    function ctips() {
+        layer.tips('短码采用的是短链接有一定防封性，并且更简洁。', '#ctips', {
+            tips: [1, '#3595CC'],
+            time: 5000
+        });
+    }
+</script>
+
+{{ $footer = 0;}}
+{{@need/footer}}
+</body>
+</html>
+<script>
+    layui.use(['form', 'layedit'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+    });
+</script>

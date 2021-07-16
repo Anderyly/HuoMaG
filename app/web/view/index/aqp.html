@@ -1,0 +1,113 @@
+{{@need/header}}
+<style>
+    html{ background:#f2f3f7;}
+    body{ background:#f2f3f7;}
+    .layui-btn{width: 80%;    margin: 20px 10%;}
+</style>
+<div class="head-title"><a class="fa fa-angle-left" href="javascript:history.go(-1)"></a>
+    {{$title}}活码</div>
+<div class="h-45"></div>
+
+<div class="uphuoma layui-form">
+
+
+</div>
+
+<div class="new-body">
+    <div class="uphuoma layui-form">
+
+        <div style=" width:94%; margin:25px auto;">
+            <form class="layui-form layui-form-pane">
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">活码名称</label>
+                    <div class="layui-input-block">
+
+                        <input type="text" name="name" value="{{$res['name']}}" placeholder="请输入活码名称" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">页面标题</label>
+                    <div class="layui-input-block">
+
+                        <input type="text" name="title"  value="{{$res['title']}}" placeholder="将显示在微信标题栏" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">底部提示</label>
+                    <div class="layui-input-block">
+
+                        <input type="text" name="tips"  value="{{$res['tips']}}" placeholder="将显示在页面底部" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">切换次数</label>
+                    <div class="layui-input-block">
+
+                        <input type="tel" name="switch" value="{{$res['switch']}}" placeholder="不能超过10万次" class="layui-input" maxlength="5">
+                    </div>
+                </div>
+                <input type="hidden" name="id" value="{{$res['pid']}}">
+                <p class="uphuoma-p"><i class="fa fa-exclamation-circle"></i> 提示：切换次数是指扫描多少次后自动切换到下一张图，如果只有一张图可以将次数设置的高一点。</p>
+            </form>
+
+            <div class="layui-form-item">
+                <button class="layui-btn" type="button" onclick="submit()" style="background-color:#1E9FFF;">点击提交</button>
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+    layui.use(['form'], function(){
+        var form = layui.form
+            ,layer = layui.layer;
+    });
+
+    function submit(){
+        var name = $("input[name='name']").val();
+        var title = $("input[name='title']").val();
+        var change_num = $("input[name='switch']").val();
+
+        if(!name){layer.msg('请输入活码名称',{icon:7,time:2000,shift:6});	return false; }
+        if(!title){	layer.msg('请输入页面标题',{icon:7,time:2000,shift:6});	return false; }
+        if(!change_num){layer.msg('请输入切换次数',{icon:7,time:2000,shift:6});	return false; }
+        if (isNaN(change_num) || change_num <=0 || change_num >=100000) {
+            layer.msg('请填写正确的切换次数,不能超过10万次',{icon:7,time:2000,shift:6});	return false;
+        }
+
+        layer.msg('<p>提交中...</p>',{icon: 16,shade: 0.5,time:false});
+        $.post("{{:url('aqpAjax')}}",$("form").serialize(),function(data){
+            layer.closeAll();
+            if(data.code == 200){
+                layer.msg(data.msg,{icon:1,time:1000});
+                setTimeout(function() {
+                    location = "{{:url('qrcode/index')}}";
+                    //location = "/salesman/index/qrgrouplist.html?gid="+data.gid;
+                },1000);
+            }else{
+                layer.msg(data.msg, {icon: 5});
+            }
+
+        }, "json");
+
+    }
+</script>
+
+{{ $footer = 2;}}
+{{@need/footer}}
+</body>
+</html>
+<script>
+    layui.use(['form', 'layedit'], function(){
+        var form = layui.form
+            ,layer = layui.layer;
+    });
+</script>

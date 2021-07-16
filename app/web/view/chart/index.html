@@ -1,0 +1,42 @@
+{{@need/header}}
+<div class="head-title"><a class="fa fa-angle-left" href="javascript:history.go(-1)"></a>活码统计</div>
+<div class="h-45"></div>
+<div class="c"></div>
+<div style="border-top: 10px solid #f2f3f7; margin-bottom:10px;"></div>
+<div class="layui-form">
+    <fieldset class="layui-elem-field layui-field-title" style="margin-top: 10px;">
+        <legend>最近30日数据汇总</legend>
+    </fieldset>
+    <table class="layui-table">
+        <thead>
+        <tr>
+            <th scope="col">日期</th>
+            <th scope="col">扫描次数</th>
+            <th scope="col">加好友量</th>
+            <th scope="col">转化率</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{foreach ($res as $k => $v) :}}
+        <tr>
+            <td>{{$k}}</td>
+            <td>{{$v['scan']}}</td>
+            <td>{{$v['plus']}}</td>
+            <td>{{$v['zh']}}%</td>
+        </tr>
+        {{endforeach}}
+        </tbody>
+    </table>
+
+
+</div>
+{{ $footer = 2; }}
+{{@need/footer}}
+</body>
+</html>
+<script>
+    layui.use(['form', 'layedit'], function () {
+        var form = layui.form
+            , layer = layui.layer;
+    });
+</script>
